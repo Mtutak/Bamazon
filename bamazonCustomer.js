@@ -11,24 +11,22 @@ var connection = mysql.createConnection({
     password: 'key',
     database: 'Bamazon'
 });
-//localhost is short for 127.0.0.1
-//all servers on internet have IP address
+//running connect method to notify when ready
 connection.connect(function (err) {
     //callback when connection comes back asynchronously
     if (err) throw err;
     console.log('connected as id' + connection.threadId);
 });
-//Select only products where there is still stock
-connection.query("SELECT product_name, item_id FROM products WHERE stock_quantity > 0", function (err, res) {
+//Select only products where there is still stock to display from db
+connection.query("SELECT product_name, item_id, price FROM products WHERE stock_quantity > 0", function (err, res) {
     if (err) throw err;
-    //run through each index in array from res pulled from query and display specific data
+    //run through each index in array returned from res pulled from query above and display specific data
     for (var i = 0; i < res.length; i++) {
-        console.log("\n Product: " + res[i].product_name + " || ID: " + res[i].item_id + " || Price: " + res[i].price);
+        console.log("\n Product: " + res[i].product_name + " || ID: " + res[i].item_id + " || Price: $" + res[i].price);
     }
+    promptOne();
 });
-// .then(promptOne);
-promptOne();
-
+//function to display questions related to products displayed
 function promptOne() {
     inquirer.prompt([{
         name: "id",
@@ -39,27 +37,46 @@ function promptOne() {
         type: "input",
         message: "How many units would you like to purchase?"
     }]).then(function (answer) {
-        console.log(answer.id);
-        console.log(answer.units);
+        //run function to check product availibility with answers passed through in prompt
         checkUnits(answer.id, answer.units);
     });
 }
 
 function checkUnits(productId, unitsReq) {
-    connection.query("SELECT stock_quantity FROM products WHERE item_id = ?", productId, function (err, res) {
+    //checking current chosen product stock with query
+    connection.query("SELECT stock_quantity, price FROM products WHERE item_id = ?", productId, function (err, res) {
         if (err) throw err;
-        console.log(res[0].stock_quantity);
+        console.log("Unit Check Query: " + res[0].stock_quantity);
+        //storing current chosen product stock from db in variable 
         var quantityAvailable = res[0].stock_quantity;
+        //conditional to check if enough of product
         if (quantityAvailable >= unitsReq) {
             console.log("We can run your transaction");
+            //calculating stock available storing in variable could also calculate in query
+            var updateUnits = quantityAvailable - unitsReq;
+            console.log("Remaining Units in Stock: " + updateUnits);
+            //run function to update dB with new stock
+            updateProductDb(updateUnits, productId, unitsReq);
         } else {
             console.log("Insufficient quantity! Only " + quantityAvailable + " units available.");
-            return true;
         }
     });
 }
 
-function updateProductDb() {
-    // connection.query()
-    //update sql db with promise show the total cost to user
+function updateProductDb(unitsRemain, id, unitsReq) {
+    //update query based upon user prompt responses
+    connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [unitsRemain, id], function (err, res) {
+        if (err) throw err;
+        console.log(res);
+    });
+    //run total cost calculation, user selection pased through as parameters
+    totalCost(id, unitsReq);
+}
+
+function totalCost(chosenID, chosenUnits) {
+    connection.query("SELECT item_id, price, stock_quantity, product_name FROM products WHERE item_id = ?", chosenID, function (err, res) {
+        if (err) throw err;
+        var total = res[0].price * chosenUnits;
+        console.log("Total Cost: " + total + " for " + res[0].product_name + " with ID: " + res[0].item_id);
+    });
 }
