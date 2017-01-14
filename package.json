@@ -1,0 +1,25 @@
+{
+  "name": "bamazon_matt_t",
+  "version": "1.0.0",
+  "description": "Amazon-like storefront with the MySQL skills you learned this week. The app will take in orders from customers and deplete stock from the store's inventory. ",
+  "main": "bamazonCustomer.js",
+  "dependencies": {
+    "console.table": "^0.8.0",
+    "inquirer": "^2.0.0",
+    "mysql": "^2.12.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mtutak/Bamazon.git"
+  },
+  "author": "Matt Tutak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mtutak/Bamazon/issues"
+  },
+  "homepage": "https://github.com/Mtutak/Bamazon#readme"
+}
