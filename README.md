@@ -1,7 +1,7 @@
 # Bamazon
 Amazon-like storefront using Node and MySQL
 
-##Please Images of Successful Test Cases Below!
+##Please See Images of Successful Test Cases Below!
 
 ![Bamazon Customer 1](/images/BamazonCustomer1.png)
 This image shows the application connecting to the mysql database and displaying all items to purchase to user.
