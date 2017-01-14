@@ -11,6 +11,17 @@ CREATE TABLE products (
     primary key (item_id)
 );
 
+-- Added for part 3 --
+USE Bamazon;
+
+CREATE TABLE departments (
+	department_id INTEGER NOT NULL,
+	department_name VARCHAR(50) NOT NULL,
+	over_head_costs DECIMAL(10,2) NOT NULL,
+	total_sales DECIMAL(10,2) NOT NULL,
+    primary key (department_id)
+);
+
 USE Bamazon;
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
@@ -25,7 +36,10 @@ VALUES ("Rock Paper Coding", "Books", 50.00, 20),
     ("Steak", "Food", 10.00, 200),
     ("Batman Utility Belt", "Fashion", 2000.00, 3);
     
-    
+-- Modifying product table so that there is a product_sales column from Challenge 3 --
+USE Bamazon;
+ALTER TABLE products
+ADD COLUMN product_sales DECIMAL(10,2) AFTER stock_quantity;   
 
     
 SELECT * FROM products;
